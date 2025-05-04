@@ -1,0 +1,15 @@
+import styles from './{{pascalCase name}}.module.scss';
+
+{{#if props}}
+    interface {{pascalCase name}}Props {
+    {{{renderPropsInterface props}}}
+    }
+{{/if}}
+
+export const {{pascalCase name}} = ({{#if props}}{ {{{renderPropsDestructure props}}} }): {{pascalCase name}}Props{{else}}){{/if}} => {
+return (
+<div className={styles.{{camelCase name}} }>
+    {{pascalCase name}}
+</div>
+);
+};

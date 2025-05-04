@@ -1,0 +1,40 @@
+{
+  "name": "component-generator",
+  "private": false,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "CLI for creating Atomic Design components",
+  "keywords": ["atomic design", "plop", "cli", "generator", "react"],
+  "author": "Smbat Antonyan",
+  "license": "MIT",
+  "bin": {
+    "component-generator": "./bin/index.js",
+    "cg": "./bin/index.js",
+    "commit": "bin/commit.js"
+  },
+  "main": "./dist/my-lib.umd.cjs",
+  "module": "./dist/my-lib.es.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "commit": "node bin/commit.js",
+    "build": "vite build",
+    "prepare": "npm run build"
+  },
+  "dependencies": {
+    "plop": "^4.0.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2",
+    "vite": "^6.3.1"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/my-lib.es.js",
+      "require": "./dist/my-lib.umd.cjs",
+      "types": "./dist/index.d.ts"
+    }
+  }
+}

@@ -10,23 +10,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 🧾 Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: 🟢 Setup Node.js
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 8
+
+      - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
-          node-version: 18
-          registry-url: 'https://registry.npmjs.org/'
+          node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
-
-      - name: 📦 Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 8 # или 7/6, в зависимости от версии, которую ты используешь
-
-      - name: 📥 Install dependencies
-        run: pnpm install --no-frozen-lockfile
 
       - name: 📋 Create release version and changelog
         run: pnpm run version-pack

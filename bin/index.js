@@ -1,11 +1,15 @@
 #!/usr/bin/env node
-import {run} from 'plop';
-import {fileURLToPath} from 'url';
-import {dirname, resolve} from 'path';
+import { run } from 'plop';
+import { fileURLToPath } from 'url';
+import { dirname, resolve } from 'path';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-process.chdir(resolve(__dirname, '..'));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
+// Правильный путь к plopfile.js (в корне проекта)
+const plopfilePath = resolve(__dirname, '../plopfile.js');
+
+// Запускаем Plop с этим файлом
 run({
-    configPath: resolve(__dirname, '../plopfile.js'),
+    configPath: plopfilePath
 });

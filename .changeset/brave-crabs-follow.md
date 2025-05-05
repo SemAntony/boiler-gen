@@ -1,0 +1,5 @@
+---
+"component-generator": patch
+---
+
+teast

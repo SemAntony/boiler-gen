@@ -1,43 +1,88 @@
-name: Publish to NPM
+#name: 🚀 Publish to npm
+#
+#on:
+#  push:
+#    tags:
+#      - 'v*'  # Триггер на теги вроде v1.0.0, v2.3.4 и т.п.
+#
+#jobs:
+#  publish:
+#    name: 📦 Publish npm package
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - name: ⏬ Checkout code
+#        uses: actions/checkout@v4
+#
+#      - name: 🟢 Set up Node.js and PNPM
+#        uses: pnpm/action-setup@v2
+#        with:
+#          version: 10.10.0 # version of pnpm
+#
+#      - uses: actions/setup-node@v4
+#        with:
+#          node-version: 18
+#          registry-url: 'https://registry.npmjs.org/'
+#          cache: 'pnpm'
+#
+#      - name: 📦 Install dependencies
+#        run: pnpm install
+#
+#      - name: 🚀 Publish to npm
+#        run: pnpm publish --access public
+#        env:
+#          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+
+
+---
+# .changeset/config.json
+{
+  "$schema": "https://unpkg.com/@changesets/config@2.3.0/schema.json",
+  "changelog": ["@changesets/cli/changelog", { "repo": "your-user/component-generator" }],
+  "commit": false,
+  "linked": [],
+  "access": "public",
+  "baseBranch": "main",
+  "updateInternalDependencies": "patch",
+  "ignore": []
+}
+
+---
+# .github/workflows/release.yml
+name: Release package
 
 on:
   push:
-    tags:
-      - 'v*' # Только теги вида v1.0.0
     branches:
       - main
 
 jobs:
-  publish:
+  release:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [20]
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 8
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
+          node-version: 18
           registry-url: 'https://registry.npmjs.org/'
 
       - name: Install dependencies
-        run: pnpm install --no-frozen-lockfile
+        run: pnpm install
 
-      - name: Build library
-        run: pnpm run build
+      - name: Create release version and changelog
+        run: pnpm run version-pack
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Publish to NPM
-        uses: JS-DevTools/npm-publish@v3
-        with:
-          token: ${{ secrets.NPM_PUBLISH_TOKEN }}
-          access: public
+      - name: Update README version
+        run: pnpm run update-readme
+
+      - name: Publish to npm
+        run: pnpm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

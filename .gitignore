@@ -7,9 +7,14 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependency directories
 node_modules
+
+# Build outputs
 dist
 dist-ssr
+
+# Local files
 *.local
 
 # Editor directories and files
@@ -22,3 +27,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# 👍 ВАЖНО: не игнорировать эти файлы
+# !pnpm-lock.yaml
+# !.changeset/
+# !.github/

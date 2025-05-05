@@ -26,7 +26,7 @@ jobs:
           version: 8 # или 7/6, в зависимости от версии, которую ты используешь
 
       - name: 📥 Install dependencies
-        run: pnpm install
+        run: pnpm install --no-frozen-lockfile
 
       - name: 📋 Create release version and changelog
         run: pnpm run version-pack

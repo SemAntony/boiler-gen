@@ -35,6 +35,14 @@ jobs:
       - name: 📝 Update README version
         run: pnpm run update-readme
 
+      - name: 🧹 Commit changes (version bump, changelog)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "chore(release): version bump" || echo "No changes to commit"
+
+
       - name: 🚀 Publish to npm
         run: pnpm publish --access public
         env:

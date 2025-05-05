@@ -44,6 +44,6 @@ jobs:
           git commit -m "chore(release): version bump" || echo "No changes to commit"
 
       - name: 🚀 Publish to npm
-        run: pnpm publish --tag latest --filter bootstrap-vue-3 --access=public
+        run: pnpm publish --tag latest  --access=public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

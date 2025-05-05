@@ -42,7 +42,6 @@ jobs:
           git add .
           git commit -m "chore(release): version bump" || echo "No changes to commit"
 
-
       - name: 🚀 Publish to npm
         run: pnpm publish --access public
         env:

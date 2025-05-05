@@ -19,6 +19,7 @@
     "commit": "./bin/commit.js"
   },
   "scripts": {
+    "update-readme": "node ./scripts/update-readme.js",
     "generate": "node ./bin/index.js",
     "commit": "node ./bin/commit.js",
     "changeset": "changeset",

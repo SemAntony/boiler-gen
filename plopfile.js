@@ -220,6 +220,11 @@ export default function (plop) {
         actions(data) {
             const actions = [];
 
+            // ✅Validation of the name of the component
+            if (!data.name || /[^a-zA-Z0-9]/.test(data.name)) {
+                throw new Error('Component name must be alphanumeric and non-empty');
+            }
+
             // Component TSX
             actions.push({
                 type: 'add',
@@ -274,7 +279,9 @@ export default function (plop) {
             // Обновление или создание корневого index.ts
             // Обновление или создание корневого index.ts с сортировкой
             actions.push(function updateRootIndex() {
-                const rootIndexPath = path.resolve('ui-kit/index.ts');
+                const uiKitPath = path.resolve(plop.getPlopfilePath(), '../ui-kit');
+                const rootIndexPath = path.join(uiKitPath, 'index.ts');
+
                 const layerDirs = fs.readdirSync(path.resolve('ui-kit')).filter(name => {
                     const fullPath = path.resolve('ui-kit', name);
                     return fs.statSync(fullPath).isDirectory();

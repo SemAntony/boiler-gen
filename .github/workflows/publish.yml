@@ -18,12 +18,17 @@ jobs:
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
+
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
 
+      - name: 📦 Install dependencies
+        run: pnpm install
+
       - name: 📋 Create release version and changelog
-        run: pnpm run version-pack
+        run: pnpm exec changeset version && pnpm install && git add .
+
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

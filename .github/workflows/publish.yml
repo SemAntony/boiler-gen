@@ -10,31 +10,33 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: 🧾 Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: 🟢 Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18
           registry-url: 'https://registry.npmjs.org/'
           cache: 'pnpm'
 
-      - name: Install pnpm
-        run: npm install -g pnpm
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8 # или 7/6, в зависимости от версии, которую ты используешь
 
-      - name: Install dependencies
+      - name: 📥 Install dependencies
         run: pnpm install
 
-      - name: Create release version and changelog
+      - name: 📋 Create release version and changelog
         run: pnpm run version-pack
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Update README version
+      - name: 📝 Update README version
         run: pnpm run update-readme
 
-      - name: Publish to npm
+      - name: 🚀 Publish to npm
         run: pnpm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

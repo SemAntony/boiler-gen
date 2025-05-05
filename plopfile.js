@@ -225,6 +225,21 @@ export default function (plop) {
                 throw new Error('Component name must be alphanumeric and non-empty');
             }
 
+            // Ensure layer directory exists
+            const layerDir = path.resolve(`ui-kit/${data.layer}`);
+            if (!fs.existsSync(layerDir)) {
+                fs.mkdirSync(layerDir, {recursive: true});
+                console.log(`Created missing directory: ${layerDir}`);
+            }
+
+            // Ensure index.ts in the layer exists
+            const layerIndex = path.join(layerDir, 'index.ts');
+            if (!fs.existsSync(layerIndex)) {
+                fs.writeFileSync(layerIndex, '', 'utf8');
+                console.log(`Created missing file: ${layerIndex}`);
+            }
+
+
             // Component TSX
             actions.push({
                 type: 'add',
@@ -280,6 +295,13 @@ export default function (plop) {
             // Обновление или создание корневого index.ts с сортировкой
             actions.push(function updateRootIndex() {
                 const uiKitPath = path.resolve(plop.getPlopfilePath(), '../ui-kit');
+
+                // ✅ Убедимся, что ui-kit/ существует
+                if (!fs.existsSync(uiKitPath)) {
+                    fs.mkdirSync(uiKitPath, { recursive: true });
+                    console.log(`Created missing directory: ${uiKitPath}`);
+                }
+
                 const rootIndexPath = path.join(uiKitPath, 'index.ts');
 
                 const layerDirs = fs.readdirSync(path.resolve('ui-kit')).filter(name => {

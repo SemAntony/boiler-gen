@@ -192,6 +192,7 @@ export default function (plop) {
 */
 
 
+/*
 import fs from 'fs';
 import path from 'path';
 
@@ -291,7 +292,6 @@ export default function (plop) {
                 return `Export already exists in ui-kit/${data.layer}/index.ts`;
             });
 
-            // Обновление или создание корневого index.ts
             // Обновление или создание корневого index.ts с сортировкой
             actions.push(function updateRootIndex() {
                 const uiKitPath = path.resolve(plop.getPlopfilePath(), '../ui-kit');
@@ -337,6 +337,120 @@ export default function (plop) {
                 return 'ui-kit/index.ts is already up to date and sorted';
             });
 
+
+            return actions;
+        },
+    });
+
+    // helpers
+    plop.setHelper('renderPropsInterface', function (props) {
+        if (!props || typeof props !== 'string') return '';
+        return props
+            .split(',')
+            .map(p => {
+                const [key, type] = p.trim().split(':');
+                return `  ${key}?: ${type};`;
+            })
+            .join('\n');
+    });
+
+    plop.setHelper('renderPropsDestructure', function (props) {
+        if (!props || typeof props !== 'string') return '';
+        return props
+            .split(',')
+            .map(p => p.trim().split(':')[0])
+            .join(', ');
+    });
+}
+*/
+
+
+
+
+
+import { fileURLToPath } from 'url';
+import path from 'path';
+import fs from 'fs';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default function (plop) {
+    // Определение корневого каталога проекта
+    const projectRoot = process.env.PROJECT_ROOT || path.resolve(__dirname, '../../../');
+
+    plop.setGenerator('component', {
+        description: 'Create an Atomic Design component',
+        prompts: [
+            {
+                type: 'list',
+                name: 'layer',
+                message: 'Choose atomic layer:',
+                choices: ['atoms', 'molecules', 'organisms', 'templates', 'pages'],
+            },
+            {
+                type: 'input',
+                name: 'name',
+                message: 'Component name (e.g. Button, Input, Card, ...):',
+            },
+            {
+                type: 'input',
+                name: 'props',
+                message: 'Enter props (e.g. label:string, disabled:boolean):',
+                when: (answers) => ['atoms', 'molecules', 'organisms'].includes(answers.layer),
+            },
+        ],
+        actions(data) {
+            const actions = [];
+
+            // Validation of the name of the component
+            if (!data.name || /[^a-zA-Z0-9]/.test(data.name)) {
+                throw new Error('Component name must be alphanumeric and non-empty');
+            }
+
+            // Ensure layer directory exists
+            const layerDir = path.resolve(projectRoot, `ui-kit/${data.layer}`);
+            if (!fs.existsSync(layerDir)) {
+                fs.mkdirSync(layerDir, {recursive: true});
+                console.log(`Created missing directory: ${layerDir}`);
+            }
+
+            // Ensure index.ts in the layer exists
+            const layerIndex = path.join(layerDir, 'index.ts');
+            if (!fs.existsSync(layerIndex)) {
+                fs.writeFileSync(layerIndex, '', 'utf8');
+                console.log(`Created missing file: ${layerIndex}`);
+            }
+
+            // Component TSX
+            actions.push({
+                type: 'add',
+                path: `${layerDir}/{{pascalCase name}}/{{pascalCase name}}.tsx`,
+                templateFile: `plop-templates/${data.layer}/component.tsx.hbs`,
+            });
+
+            // Optional files (scss + stories)
+            if (['atoms', 'molecules', 'organisms'].includes(data.layer)) {
+                actions.push(
+                    {
+                        type: 'add',
+                        path: `${layerDir}/{{pascalCase name}}/{{pascalCase name}}.module.scss`,
+                        templateFile: `plop-templates/${data.layer}/component.module.scss.hbs`,
+                    },
+                    {
+                        type: 'add',
+                        path: `${layerDir}/{{pascalCase name}}/{{pascalCase name}}.stories.tsx`,
+                        templateFile: `plop-templates/${data.layer}/component.stories.tsx.hbs`,
+                    }
+                );
+            }
+
+            // Local component index
+            actions.push({
+                type: 'add',
+                path: `${layerDir}/{{pascalCase name}}/index.ts`,
+                template: "export * from './{{pascalCase name}}';",
+            });
 
             return actions;
         },

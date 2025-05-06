@@ -368,16 +368,17 @@ export default function (plop) {
 
 
 
-import { fileURLToPath } from 'url';
+// import { fileURLToPath } from 'url';
 import path from 'path';
 import fs from 'fs';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
 
 export default function (plop) {
     // Определение корневого каталога проекта
-    const projectRoot = process.env.PROJECT_ROOT || path.resolve(__dirname, '../../../');
+    const projectRoot = process.env.PROJECT_ROOT || process.cwd();
+
 
     plop.setGenerator('component', {
         description: 'Create an Atomic Design component',
